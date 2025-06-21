@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="05ca3613-5d8c-4188-b4d5-21ced16e83c0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/Tracing the pipeline.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="05ca3613-5d8c-4188-b4d5-21ced16e83c0" name="Changes" comment="Inital commit" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -228,8 +221,17 @@
       <updated>1743530917900</updated>
       <workItem from="1743530919279" duration="18945000" />
       <workItem from="1748943994433" duration="53000" />
-      <workItem from="1748944498447" duration="25956000" />
+      <workItem from="1748944498447" duration="26341000" />
     </task>
+    <task id="LOCAL-00001" summary="Inital commit">
+      <option name="closed" value="true" />
+      <created>1750535683324</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1750535683324</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -245,6 +247,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Inital commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Inital commit" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/testingGraph$main.coverage" NAME="main Coverage Results" MODIFIED="1748946792908" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.venv" />
