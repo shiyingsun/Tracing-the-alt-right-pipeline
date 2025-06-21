@@ -1,0 +1,8 @@
+praw
+python-dotenv
+networkx
+matplotlib
+textblob
+nltk
+python-louvain
+tqdm

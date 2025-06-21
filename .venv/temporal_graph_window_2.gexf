@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
+  <meta lastmodifieddate="2025-06-21">
+    <creator>NetworkX 3.5</creator>
+  </meta>
+  <graph defaultedgetype="directed" mode="static" name="">
+    <nodes>
+      <node id="news" label="news" />
+      <node id="conservative" label="conservative" />
+      <node id="conspiracy" label="conspiracy" />
+      <node id="politics" label="politics" />
+      <node id="worldnews" label="worldnews" />
+      <node id="MensRights" label="MensRights" />
+      <node id="The_Donald" label="The_Donald" />
+      <node id="JordanPeterson" label="JordanPeterson" />
+      <node id="KotakuInAction" label="KotakuInAction" />
+      <node id="TumblrInAction" label="TumblrInAction" />
+      <node id="MGTOW" label="MGTOW" />
+      <node id="SocialJusticeInAction" label="SocialJusticeInAction" />
+    </nodes>
+    <edges>
+      <edge source="news" target="worldnews" id="0" weight="19" />
+      <edge source="news" target="politics" id="1" weight="15" />
+      <edge source="conservative" target="politics" id="2" weight="6" />
+      <edge source="conspiracy" target="politics" id="3" weight="2" />
+      <edge source="politics" target="news" id="4" weight="3" />
+      <edge source="politics" target="worldnews" id="5" weight="38" />
+      <edge source="politics" target="conservative" id="6" weight="5" />
+      <edge source="politics" target="conspiracy" id="7" weight="2" />
+      <edge source="worldnews" target="news" id="8" weight="12" />
+      <edge source="worldnews" target="politics" id="9" weight="64" />
+      <edge source="worldnews" target="conservative" id="10" weight="2" />
+      <edge source="JordanPeterson" target="KotakuInAction" id="11" weight="2" />
+      <edge source="KotakuInAction" target="MensRights" id="12" weight="2" />
+    </edges>
+  </graph>
+</gexf>

@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='utf-8'?>
+<gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
+  <meta lastmodifieddate="2025-06-21">
+    <creator>NetworkX 3.5</creator>
+  </meta>
+  <graph defaultedgetype="directed" mode="static" name="">
+    <attributes mode="static" class="edge">
+      <attribute id="0" title="distance" type="long" />
+    </attributes>
+    <nodes>
+      <node id="news" label="news" />
+      <node id="conservative" label="conservative" />
+      <node id="conspiracy" label="conspiracy" />
+      <node id="politics" label="politics" />
+      <node id="worldnews" label="worldnews" />
+      <node id="MensRights" label="MensRights" />
+      <node id="The_Donald" label="The_Donald" />
+      <node id="JordanPeterson" label="JordanPeterson" />
+      <node id="KotakuInAction" label="KotakuInAction" />
+      <node id="TumblrInAction" label="TumblrInAction" />
+      <node id="MGTOW" label="MGTOW" />
+      <node id="SocialJusticeInAction" label="SocialJusticeInAction" />
+    </nodes>
+    <edges>
+      <edge source="news" target="worldnews" id="0" weight="19">
+        <attvalues>
+          <attvalue for="0" value="19" />
+        </attvalues>
+      </edge>
+      <edge source="news" target="politics" id="1" weight="15">
+        <attvalues>
+          <attvalue for="0" value="15" />
+        </attvalues>
+      </edge>
+      <edge source="conservative" target="politics" id="2" weight="6">
+        <attvalues>
+          <attvalue for="0" value="6" />
+        </attvalues>
+      </edge>
+      <edge source="conspiracy" target="politics" id="3" weight="2">
+        <attvalues>
+          <attvalue for="0" value="2" />
+        </attvalues>
+      </edge>
+      <edge source="politics" target="news" id="4" weight="3">
+        <attvalues>
+          <attvalue for="0" value="3" />
+        </attvalues>
+      </edge>
+      <edge source="politics" target="worldnews" id="5" weight="38">
+        <attvalues>
+          <attvalue for="0" value="38" />
+        </attvalues>
+      </edge>
+      <edge source="politics" target="conservative" id="6" weight="5">
+        <attvalues>
+          <attvalue for="0" value="5" />
+        </attvalues>
+      </edge>
+      <edge source="politics" target="conspiracy" id="7" weight="2">
+        <attvalues>
+          <attvalue for="0" value="2" />
+        </attvalues>
+      </edge>
+      <edge source="worldnews" target="news" id="8" weight="12">
+        <attvalues>
+          <attvalue for="0" value="12" />
+        </attvalues>
+      </edge>
+      <edge source="worldnews" target="politics" id="9" weight="64">
+        <attvalues>
+          <attvalue for="0" value="64" />
+        </attvalues>
+      </edge>
+      <edge source="worldnews" target="conservative" id="10" weight="2">
+        <attvalues>
+          <attvalue for="0" value="2" />
+        </attvalues>
+      </edge>
+    </edges>
+  </graph>
+</gexf>
