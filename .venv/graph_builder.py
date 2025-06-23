@@ -7,6 +7,7 @@ from matplotlib.patches import FancyArrowPatch
 from collections import defaultdict, Counter
 from textblob import TextBlob
 import time
+import math, numpy as np
 
 class GraphBuilder:
     def __init__(self,
@@ -26,7 +27,6 @@ class GraphBuilder:
     def load_user_data(self):
         with open(self.user_trajectory_file, "r") as f:
             raw_data = json.load(f)
-            # Convert to tuple format: (ts, sub, text)
             self.user_data = {
                 user: [(item[0], item[1], item[2]) for item in posts]
                 for user, posts in raw_data.items()
@@ -42,7 +42,6 @@ class GraphBuilder:
                 self.subreddit_users[sub] = set(users)
 
     def build_coposting_graph(self, min_overlap=3):
-        # If subreddit_users wasn’t pre-loaded from JSON, rebuild from user_data:
         if not self.subreddit_users and self.user_data:
             for user, posts in self.user_data.items():
                 for ts, sub, _ in posts:
@@ -62,31 +61,22 @@ class GraphBuilder:
         return G
 
     def draw_coposting_graph(self, G):
-        # 1) Compute metrics
         deg = dict(G.degree())
         btw = nx.betweenness_centrality(G, weight='weight')
 
-        # 2) Base layout
         try:
             pos = nx.nx_agraph.graphviz_layout(G, prog='neato')
         except:
             pos = nx.spring_layout(G, k=2.0, iterations=300, seed=42)
 
-        # ─────────────────────────────────────────────────────────────────
-        # RADIALIZE: push low-overlap nodes outward
-        import math, numpy as np
-
-        # a) Strength = sum of co-posting weights
         strength = {
             n: sum(d['weight'] for _, _, d in G.edges(n, data=True))
             for n in G.nodes()
         }
         min_s, max_s = min(strength.values()), max(strength.values())
 
-        # b) Inner/outer radii tweakable
         r_min, r_max = 1.0, 1.3
 
-        # c) Convert (x,y) → (r,θ) then reset r by normalized strength
         new_pos = {}
         for n, (x, y) in pos.items():
             θ = math.atan2(y, x)
@@ -94,12 +84,9 @@ class GraphBuilder:
             r = r_min + (1 - norm) * (r_max - r_min)
             new_pos[n] = np.array([math.cos(θ) * r, math.sin(θ) * r])
         pos = new_pos
-        # ─────────────────────────────────────────────────────────────────
 
-        # Create figure and axis
         fig, ax = plt.subplots(figsize=(16, 12))
 
-        # 3) Draw edges first (faint, straight)
         raw_w = [G[u][v]['weight'] for u, v in G.edges()]
         max_w = max(raw_w) if raw_w else 1
 
@@ -116,7 +103,6 @@ class GraphBuilder:
             )
             ax.add_patch(arrow)
 
-        # 4) Draw nodes on top
         node_sizes = [300 + deg[n] * 200 for n in G.nodes()]
         nodes = nx.draw_networkx_nodes(
             G, pos,
@@ -129,7 +115,6 @@ class GraphBuilder:
         )
         nodes.set_zorder(2)
 
-        # 5) Labels with halo
         for node, (x, y) in pos.items():
             ax.text(
                 x, y, node,
@@ -139,7 +124,6 @@ class GraphBuilder:
                 zorder=3
             )
 
-        # 6) Colorbar
         sm = plt.cm.ScalarMappable(
             cmap=plt.cm.OrRd,
             norm=plt.Normalize(vmin=min(btw.values(), default=0),
@@ -149,13 +133,11 @@ class GraphBuilder:
         cbar = plt.colorbar(sm, ax=ax)
         cbar.set_label('Betweenness Centrality', fontsize=12)
 
-        # 7) Title and layout
         ax.set_title('Subreddit Co-posting Graph (Radialized)', fontsize=16)
         ax.axis('off')
         plt.tight_layout(pad=2)
         plt.show()
 
-        # 8) Print top-3 overlaps
         edges_sorted = sorted(G.edges(data=True),
                               key=lambda x: x[2]['weight'],
                               reverse=True)
@@ -164,7 +146,6 @@ class GraphBuilder:
             print(f"  {u} – {v}: {d['weight']} shared users")
 
     def build_trajectory_graph(self, min_transition=2, time_window=30, data_filter=None):
-        """Add time-based transition filtering with proper parameter definition"""
         transitions = Counter()
 
         for user, posts in self.user_data.items():
@@ -174,24 +155,21 @@ class GraphBuilder:
             sequence = []
             last_sub = None
             for ts, sub, _ in sorted_posts:
-                if sub != last_sub:  # Only add when sub changes
+                if sub != last_sub:
                     sequence.append((ts, sub))
                     last_sub = sub
 
-            # Process transitions with time window
             for i in range(len(sequence) - 1):
                 src_time, src = sequence[i]
                 dst_time, dst = sequence[i + 1]
                 time_diff = dst_time - src_time
 
-                # Convert days to seconds (86400 seconds/day)
                 max_seconds = time_window * 86400
                 if (time_diff <= max_seconds and
                         src in self.subreddits and
                         dst in self.subreddits):
                     transitions[(src, dst)] += 1
 
-        # Rest of the code remains the same...
         G = nx.DiGraph()
         for sub in self.subreddits:
             G.add_node(sub)
@@ -203,31 +181,22 @@ class GraphBuilder:
         return G
 
     def draw_trajectory_graph(self, G):
-        # 1) Define edge distances equal to original weights (higher weight = further apart)
         for u, v, data in G.edges(data=True):
             data['distance'] = data['weight']
 
-        # 2) Compute initial layout
         try:
             pos = nx.kamada_kawai_layout(G, weight='distance')
         except:
             pos = nx.spring_layout(G, k=3.0, scale=10.0, iterations=300, seed=42)
 
-        # ─────────────────────────────────────────────────────────────────
-        # RADIALIZE: push weakly‐connected nodes outward
-        import math, numpy as np
-
-        # a) Compute node “strength” = sum of its in+out weights
         strength = {
             n: sum(d['weight'] for _, _, d in G.edges(n, data=True))
             for n in G.nodes()
         }
         min_s, max_s = min(strength.values()), max(strength.values())
 
-        # b) Define how tight/loose the ring is
-        r_min, r_max = 1.0, 1.3  # tweak r_max up/down to control “spread”
+        r_min, r_max = 1.0, 1.3
 
-        # c) Convert each (x,y) → (r,θ), then reset r based on strength
         rad_pos = {}
         for n, (x, y) in pos.items():
             θ = math.atan2(y, x)
@@ -235,12 +204,9 @@ class GraphBuilder:
             r = r_min + (1 - norm) * (r_max - r_min)
             rad_pos[n] = np.array([math.cos(θ) * r, math.sin(θ) * r])
         pos = rad_pos
-        # ─────────────────────────────────────────────────────────────────
 
-        # 3) Draw
         fig, ax = plt.subplots(figsize=(14, 10))
 
-        # … rest of your arrow‐drawing, node‐drawing, labels, etc., unchanged …
         raw_w = [G[u][v]['weight'] for u, v in G.edges()]
         max_w = max(raw_w) if raw_w else 1
         for (u, v), w in zip(G.edges(), raw_w):
@@ -283,6 +249,7 @@ class GraphBuilder:
             for u, v, data in G.edges(data=True)
             if data['weight'] >= 10
         }
+
         nx.draw_networkx_edge_labels(
             G, pos,
             edge_labels=edge_labels,
@@ -300,7 +267,7 @@ class GraphBuilder:
         Overlay co-posting (light gray) and trajectory (red arrows) with
         radialized layout so low-interaction nodes drift outward.
         """
-        # 1) Base spring layout
+
         pos = nx.spring_layout(
             G_undirected,
             k=1.8,
@@ -308,11 +275,6 @@ class GraphBuilder:
             seed=42
         )
 
-        # ─────────────────────────────────────────────────────────────────
-        # RADIALIZE: push low-degree nodes outward
-        import math, numpy as np
-
-        # a) Compute node “strength” as sum of co-posting + trajectory weights
         strength = {}
         for n in G_undirected.nodes():
             w_u = sum(d['weight'] for _, _, d in G_undirected.edges(n, data=True))
@@ -322,10 +284,9 @@ class GraphBuilder:
 
         min_s, max_s = min(strength.values()), max(strength.values())
 
-        # b) Tweak these to adjust spread
+        # use to adjust spread
         r_min, r_max = 1.0, 1.4
 
-        # c) Convert (x,y)->(r,θ), then reassign r
         new_pos = {}
         for n, (x, y) in pos.items():
             θ = math.atan2(y, x)
@@ -333,16 +294,13 @@ class GraphBuilder:
             r = r_min + (1 - norm) * (r_max - r_min)
             new_pos[n] = np.array([math.cos(θ) * r, math.sin(θ) * r])
         pos = new_pos
-        # ─────────────────────────────────────────────────────────────────
 
-        # 2) Compute widths for co-posting edges
         raw_w_u = [G_undirected[u][v]['weight'] for u, v in G_undirected.edges()]
         max_w_u = max(raw_w_u) if raw_w_u else 1
         widths_u = [(w / max_w_u) * 6 for w in raw_w_u]
 
         plt.figure(figsize=(20, 14))
 
-        # 3) Draw nodes first
         node_sizes = [
             len(self.subreddit_users.get(node, [])) * 12 + 200
             for node in G_undirected.nodes()
@@ -355,7 +313,6 @@ class GraphBuilder:
             linewidths=1.5
         )
 
-        # 4) Undirected edges (light gray)
         nx.draw_networkx_edges(
             G_undirected, pos,
             width=widths_u,
@@ -363,7 +320,6 @@ class GraphBuilder:
             alpha=0.8
         )
 
-        # 5) Trajectory edges (crimson arrows)
         raw_w_d = [G_directed[u][v]['weight'] for u, v in G_directed.edges()]
         max_w_d = max(raw_w_d) if raw_w_d else 1
         for u, v, data in G_directed.edges(data=True):
@@ -379,7 +335,6 @@ class GraphBuilder:
                 alpha=1.0
             )
 
-        # 6) Labels with halo
         for node, (x, y) in pos.items():
             plt.text(
                 x, y, node,
@@ -395,12 +350,12 @@ class GraphBuilder:
         plt.tight_layout()
         plt.show()
 
-        # 7) Print summary stats
         edges_sorted = sorted(
             G_undirected.edges(data=True),
             key=lambda x: x[2]['weight'],
             reverse=True
         )
+
         print("Top 3 co-posting overlaps:")
         for u, v, d in edges_sorted[:3]:
             print(f"  {u} – {v}: {d['weight']} shared users")
@@ -420,17 +375,14 @@ class GraphBuilder:
             print("Warning: Community detection module not available")
             return G
 
-        # Use the Louvain method from networkx
         communities = nx_comm.louvain_communities(G.to_undirected(), seed=42)
 
-        # Assign community IDs to nodes
         partition = {}
         for comm_id, nodes in enumerate(communities):
             for node in nodes:
                 partition[node] = comm_id
         nx.set_node_attributes(G, partition, "community")
 
-        # Print community summary
         comm_mapping = defaultdict(list)
         for node, comm_id in partition.items():
             comm_mapping[comm_id].append(node)
@@ -472,8 +424,6 @@ class GraphBuilder:
         for user, posts in self.user_data.items():
             user_sentiments = []
             for post in posts:
-                # In real implementation, you'd need to collect post text
-                # For now we'll simulate sentiment
                 text = ""  # Should be actual post text from data collection
                 if text:
                     analysis = TextBlob(text)
@@ -494,9 +444,8 @@ class GraphBuilder:
                 scores[node] = float('inf')
         return scores
 
-    # Track cross-subreddit meme propagation
     def track_meme_propagation(self, keywords):
-        meme_db = defaultdict(dict)  # {meme: {subreddit: first_seen_timestamp}}
+        meme_db = defaultdict(dict)
 
         for sub, posts in self.subreddit_posts.items():
             for post in posts:

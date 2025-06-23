@@ -6,3 +6,4 @@ textblob
 nltk
 python-louvain
 tqdm
+numpy

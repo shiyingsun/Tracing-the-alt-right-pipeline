@@ -11,10 +11,7 @@ class DataCollector:
                             "worldnews", "MensRights", "The_Donald", "JordanPeterson",
                         "KotakuInAction", "TumblrInAction", "MGTOW", "SocialJusticeInAction"]
 
-        # Will hold per‐user [(timestamp, subreddit)] lists
         self.user_data = defaultdict(list)
-
-        # Will hold per‐subreddit { user, user, … }
         self.subreddit_users = defaultdict(set)
 
     def collect_user_posts(self, limit=5000, time_window="year"):
@@ -31,14 +28,12 @@ class DataCollector:
         for sub in self.subreddits:
             try:
                 subreddit = self.client.get_subreddit(sub)
-                # Verify subreddit is accessible
                 _ = subreddit.title
                 active_subreddits.append(sub)
             except Exception as e:
                 print(f"  → Skipping r/{sub}: {str(e)}")
                 continue
 
-        # Update to only active subreddits
         self.subreddits = active_subreddits
         print(f"Active subreddits: {', '.join(active_subreddits)}")
 
@@ -46,7 +41,6 @@ class DataCollector:
             subreddit = self.client.get_subreddit(sub)
             print(f"Collecting from r/{sub}...")
             try:
-                # Use .new(...) for temporal ordering
                 for post in subreddit.new(limit=limit):
                     post_time = datetime.fromtimestamp(post.created_utc, UTC)
                     if post_time < time_threshold:
@@ -60,7 +54,6 @@ class DataCollector:
             except Exception as e:
                 print(f"  → Failed to collect from r/{sub}: {e}")
 
-    # In save_user_trajectory method
     def save_user_trajectory(self, filename="user_trajectory.json"):
         """Store [timestamp, subreddit, text] for each post"""
         serializable = {

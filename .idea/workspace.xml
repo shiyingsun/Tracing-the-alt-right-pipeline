@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="05ca3613-5d8c-4188-b4d5-21ced16e83c0" name="Changes" comment="Inital commit" />
+    <list default="true" id="05ca3613-5d8c-4188-b4d5-21ced16e83c0" name="Changes" comment="Inital commit">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/data_collector.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/data_collector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/graph_builder.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/graph_builder.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.venv/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/.venv/main.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,6 +25,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "shiyingsun"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/shiyingsun/Tracing-the-alt-right-pipeline.git",
+    "accountId": "f21f8666-d5fd-4544-9139-5d25f4c1b4e6"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -221,7 +238,7 @@
       <updated>1743530917900</updated>
       <workItem from="1743530919279" duration="18945000" />
       <workItem from="1748943994433" duration="53000" />
-      <workItem from="1748944498447" duration="26549000" />
+      <workItem from="1748944498447" duration="28290000" />
     </task>
     <task id="LOCAL-00001" summary="Inital commit">
       <option name="closed" value="true" />
